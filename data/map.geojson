@@ -1,0 +1,44 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Archlab"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.36966109275818,
+          48.198037067440076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Getreidemarkt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.363529562950134,
+          48.20123721523232
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Spittelau"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.357516050338745,
+          48.2322915016595
+        ]
+      }
+    }
+  ]
+}
