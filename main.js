@@ -1,105 +1,78 @@
-import 'ol/ol.css';
-import 'javascript-autocomplete/auto-complete.css';
-import Map from 'ol/map';
-import View from 'ol/view';
-import TileLayer from 'ol/layer/tile';
-import XYZSource from 'ol/source/xyz';
-//! [import-proj]
-import proj from 'ol/proj';
-//! [import-proj]
-import VectorLayer from 'ol/layer/vector';
-import VectorSource from 'ol/source/vector';
-import Feature from 'ol/feature';
-import Point from 'ol/geom/point';
-import Style from 'ol/style/style';
-import IconStyle from 'ol/style/icon';
-import Overlay from 'ol/overlay';
-//! Suchzeile
-import GeoJSON from 'ol/format/geojson';
-import {apply} from 'ol-mapbox-style';
-import AutoComplete from 'javascript-autocomplete';
+import "ol/ol.css";
+import "javascript-autocomplete/auto-complete.css";
+import proj from "ol/proj";
+import GeoJSON from "ol/format/geojson";
+import VectorLayer from "ol/layer/vector";
+import VectorSource from "ol/source/vector";
+import { apply } from "ol-mapbox-style";
+import AutoComplete from "javascript-autocomplete";
 
-//! [map-const]
-const map = new Map({
+var map = apply(
+  "map",
+  "data/style.json"
+);
 
-//! [map-const]
-  target: 'map',
-  layers: [
-    new TileLayer({
-      source: new XYZSource({
-        url: 'http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg'
-      })
-    })
-  ],
-  view: new View({
-    center: [0, 0],
-    zoom: 2
-  })
-});
+function fit() {
+  map.getView().fit(source.getExtent(), {
+    maxZoom: 19,
+    duration: 250
+  });
+}
 
-const position = new VectorSource();
-const vector = new VectorLayer({
-  source: position
-});
+var selected;
+function getAddress(feature) {
+  var properties = feature.getProperties();
+  return (
+    (properties.city || properties.name || "") +
+    " " +
+    (properties.street || "") +
+    " " +
+    (properties.housenumber || "")
+  );
+}
 
 var searchResult = new VectorLayer({
-  zIndex: 1
+  zIndex: 9999
 });
 map.addLayer(searchResult);
 
+var onload, source;
 new AutoComplete({
   selector: 'input[name="q"]',
   source: function(term, response) {
-    var source = new VectorSource({
+    if (onload) {
+      source.un("change", onload);
+    }
+    searchResult.setSource(null);
+    source = new VectorSource({
       format: new GeoJSON(),
-      url: 'https://photon.komoot.de/api/?q=' + term
+      url: "https://photon.komoot.de/api/?q=" + term
     });
-    source.on('change', function() {
+    onload = function(e) {
       var texts = source.getFeatures().map(function(feature) {
-        var properties = feature.getProperties();
-        return (properties.city || properties.name || '') + ', ' +
-          (properties.street || '') + ' ' +
-          (properties.housenumber || '');
+        return getAddress(feature);
       });
       response(texts);
-      map.getView().fit(source.getExtent(), {
-        maxZoom: 19,
-        duration: 250
-      });
-    });
+      fit();
+    };
+    source.once("change", onload);
     searchResult.setSource(source);
+  },
+  onSelect: function(e, term, item) {
+    selected = item.getAttribute("data-val");
+    source.getFeatures().forEach(function(feature) {
+      if (getAddress(feature) !== selected) {
+        source.removeFeature(feature);
+      }
+    });
+    fit();
   }
 });
-
-vector.setStyle(new Style({
-  image: new IconStyle({
-    src: './data/marker.png'
-  })
-}));
-map.addLayer(vector);
-
-//! [geolocation]
-navigator.geolocation.getCurrentPosition(function(pos) {
-  const coords = proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
-  map.getView().animate({center: coords, zoom: 13});
-  position.addFeature(new Feature(new Point(coords)));
+map.on('singleclick', function(e) {
+ var pos = proj.toLonLat(e.coordinate);
+ window.location.href =
+ 'https://student.ifip.tuwien.ac.at/geoweb/2017/g03/map/feedback.php?pos=' +
+ pos.join(' ');
 });
-
-//! Pop-up bei Klick
-
-var overlay = new Overlay({
-  element: document.getElementById('popup-container'),
-  positioning: 'bottom-center',
-  offset: [0, -10]
-});
-
-map.addOverlay(overlay);
-
-map.on('click', function(e) {
-  overlay.setPosition();
-  var features = map.getFeaturesAtPixel(e.pixel);
-  if (features) {
-    overlay.getElement().innerHTML = 'Meine Position';
-    overlay.setPosition(e.coordinate);
-  }
-});
+import sync from 'ol-hashed';
+sync(map);
