@@ -104,13 +104,11 @@
     },
     {
       "id": "radwege",
-      "type": "fill",
+      "type": "line",
       "source": "radwegeogd",
       "minzoom": 0,
       "paint": {
-        "fill-color": "rgba(192, 192, 192, 1)",
-        "fill-outline-color": "rgba(4, 4, 4, 1)",
-        "fill-opacity": 0.9
+        "line-color": "green"
       }
 
     },
