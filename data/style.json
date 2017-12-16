@@ -3,18 +3,22 @@
   "name": "GeoWeb Demo",
   "metadata": {},
   "center": [
-    16.288,
-    48.2196
+    16.3792,
+    48.2231
   ],
-  "zoom": 10,
+  "zoom": 12,
   "sources": {
-    "feedback": {
+    "zaehlpunkte": {
       "type": "geojson",
       "data": "https://student.ifip.tuwien.ac.at/geoweb/2017/g03/map/postgis_geojson.php"
     },
     "bezirksgrenzenogd": {
       "type": "geojson",
       "data": "https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:BEZIRKSGRENZEOGD&srsName=EPSG:4326&outputFormat=json"
+    },
+    "radwegeogd": {
+      "type": "geojson",
+      "data": "https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:RADWEGEOGD&srsName=EPSG:4326&outputFormat=json"
     },
     "basemap": {
       "type": "raster",
@@ -51,9 +55,10 @@
         ]
       ],
       "paint": {
-        "fill-color": "rgba(41, 48, 210, 1)",
+        "fill-color": "rgba(192, 192, 192, 1)",
         "fill-outline-color": "rgba(4, 4, 4, 1)",
-        "fill-opacity": 0.7
+        "fill-opacity": 0.9
+
       }
     },
     {
@@ -73,9 +78,9 @@
         ]
       ],
       "paint": {
-        "fill-color": "rgba(208, 208, 67, 1)",
+        "fill-color": "rgba(192, 192, 192, 1)",
         "fill-outline-color": "rgba(4, 4, 4, 1)",
-        "fill-opacity": 0.7
+        "fill-opacity": 0.9
       }
     },
     {
@@ -91,18 +96,31 @@
         ]
       ],
       "paint": {
-        "fill-color": "rgba(230, 18, 38, 1)",
+        "fill-color": "rgba(192, 192, 192, 1)",
         "fill-outline-color": "rgba(4, 4, 4, 1)",
-        "fill-opacity": 0.7
+        "fill-opacity": 0.9
       }
+
     },
     {
-      "id": "feedback",
+      "id": "radwege",
+      "type": "fill",
+      "source": "radwegeogd",
+      "minzoom": 0,
+      "paint": {
+        "fill-color": "rgba(192, 192, 192, 1)",
+        "fill-outline-color": "rgba(4, 4, 4, 1)",
+        "fill-opacity": 0.9
+      }
+
+    },
+    {
+      "id": "zaehlpunkte",
       "type": "circle",
-      "source": "feedback",
+      "source": "zaehlpunkte",
       "paint": {
         "circle-radius": 7,
-        "circle-color": "rgba(232, 12, 12, 1)",
+        "circle-color": "rgba(0, 0, 0, 1)",
         "circle-stroke-color": "rgba(127, 127, 127, 1)",
         "circle-stroke-width": 1
       }
