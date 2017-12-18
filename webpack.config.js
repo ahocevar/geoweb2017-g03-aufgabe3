@@ -13,6 +13,9 @@ const main = {
   entry: {
     main: './main.js'
   },
+  externals: {
+    openlayers: 'ol'
+  },
   module: {
     rules: [
       {
@@ -21,6 +24,14 @@ const main = {
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: require.resolve('ol3-layerswitcher/src/ol3-layerswitcher.js'),
+        loader: 'imports-loader?olPkg=ol,Control=ol/control/Control,root=>{ol:{control:{}}};root.ol.control.Control=Control.default;root.ol.inherits=olPkg.default.inherits,this=>root,define=>{},module=>{}'
+      },
+      {
+        test: require.resolve('ol3-layerswitcher/src/ol3-layerswitcher.js'),
+        loader: 'exports-loader?LayerSwitcher=root.ol.control.LayerSwitcher'
       },
       {
         test: /\.css$/,

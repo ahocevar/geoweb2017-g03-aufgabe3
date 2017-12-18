@@ -1,4 +1,5 @@
 import 'ol/ol.css';
+import 'ol3-layerswitcher/src/ol3-layerswitcher.css';
 import proj from 'ol/proj';
 import GeoJSON from 'ol/format/geojson';
 import VectorLayer from 'ol/layer/vector';
@@ -7,12 +8,19 @@ import {
   apply
 } from 'ol-mapbox-style';
 import Overlay from 'ol/overlay';
-import coordinate from 'ol/coordinate';
+import {LayerSwitcher} from 'ol3-layerswitcher/src/ol3-layerswitcher';
 
 var map = apply(
   'map',
   'data/style.json'
 );
+map.getLayers().on('add', function(e) {
+  var layer = e.element;
+  // zIndex changes when configuration in data/style.json changes
+  if (layer.getZIndex() == 5) {
+    layer.set('title', 'Radwege');
+  }
+});
 
 function fit() {
   map.getView().fit(source.getExtent(), {
@@ -36,3 +44,4 @@ map.on('click', function(e) {
     overlay.setPosition(coords);
   }
 });
+map.addControl(new LayerSwitcher());
